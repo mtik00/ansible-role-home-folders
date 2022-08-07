@@ -3,8 +3,15 @@
 
 - name: Verify
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
-    - name: Example assertion
-      ansible.builtin.assert:
-        that: true
+    - name: Check if bin exists
+      block:
+        - name: stat bin
+          ansible.builtin.stat:
+            path: "{{ ansible_user_dir }}/bin"
+          register: bin
+
+        - name: bin exists
+          ansible.builtin.assert:
+            that: bin.stat.exists
